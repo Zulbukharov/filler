@@ -6,7 +6,7 @@
 /*   By: azulbukh <azulbukh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 22:05:07 by azulbukh          #+#    #+#             */
-/*   Updated: 2018/12/12 00:11:43 by azulbukh         ###   ########.fr       */
+/*   Updated: 2018/12/12 01:30:52 by azulbukh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,20 @@ void	redraw(t_global *global)
 	}
 	while(ft_isnum(global->line[u.i]) == 0)
 		u.i++;
-	global->x_h = ft_atoi(&global->line[u.i]);
-	global->y_w = ft_atoi(&global->line[u.i + ft_get_int_len(global->x_h)]);
-	global->elem_size_x = WIN_X / global->x_h;
-	global->elem_size_y = (WIN_Y - FRAME_SIZE) / global->y_w;
-	global->map = (char**)malloc(sizeof(char*) * global->x_h);
-	u.x = 0;
-	while (u.x < global->x_h)
+	if (!global->iter)
 	{
-		global->map[u.x] = (char*)malloc(sizeof(char) * global->y_w);
-		u.x++;
+		global->x_h = ft_atoi(&global->line[u.i]);
+		global->y_w = ft_atoi(&global->line[u.i + ft_get_int_len(global->x_h)]);
+		global->elem_size_x = WIN_X / global->x_h;
+		global->elem_size_y = (WIN_Y - FRAME_SIZE) / global->y_w;
+		global->map = (char**)malloc(sizeof(char*) * global->x_h);
+		u.x = 0;
+		while (u.x < global->x_h)
+		{
+			global->map[u.x] = (char*)malloc(sizeof(char) * global->y_w);
+			u.x++;
+		}
+		global->iter = 1;
 	}
 	free(global->line);
 	global->line = NULL;
@@ -134,7 +138,6 @@ void			loop_for_map(t_global *global)
 	for (int x = 0; x < global->x_h; x++)
 		for (int y = 0; y < global->y_w; y++)
 			draw_elem_rect(global, x, y);
-	destroy(global);
 	SDL_Rect rect3 = {0, WIN_Y - FRAME_SIZE, WIN_X, FRAME_SIZE};
 	SDL_RenderCopy(global->renderer, global->frame, NULL, &rect3);
 	SDL_Rect rect = {200, WIN_Y - FRAME_SIZE + 20, 200, 200};
@@ -164,6 +167,7 @@ void			loop(t_global global)
 			loop_for_map(&global);
 			SDL_RenderPresent(global.renderer);
 		}
+		// if (global.clear)
 	}
 }
 
@@ -185,18 +189,18 @@ void	init_sdl(t_global *global)
 	global->texture[3] = IMG_LoadTexture(global->renderer, "blue.png");
 	global->elf = IMG_LoadTexture(global->renderer, "elf.png");
 	global->done = SDL_FALSE;
-	ft_putstr_fd("init\n", 2);
 }
 
 int		main(void)
 {
 	t_global global;
 
-	global = (t_global){0, 0, {}, 0, 0, 0, {}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0};
+	global = (t_global){0, 0, {}, 0, 0, 0, {}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0};
 	if (SDL_Init(SDL_INIT_VIDEO) == 0)
 	{
 		init_sdl(&global);
 		loop(global);
+		destroy(&global);
 		if (global.renderer)
 			SDL_DestroyRenderer(global.renderer);
 		if (global.window)

@@ -6,7 +6,7 @@
 /*   By: azulbukh <azulbukh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 22:05:37 by azulbukh          #+#    #+#             */
-/*   Updated: 2018/12/12 00:11:35 by azulbukh         ###   ########.fr       */
+/*   Updated: 2018/12/12 01:28:34 by azulbukh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef	struct		s_global
 	int				score_p1;
 	int				score_p2;
 	SDL_Texture		*elf;
+	int				iter;
 }					t_global;
 
 #endif
