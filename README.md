@@ -23,7 +23,7 @@ A visualizer made with the SDL2 helps us to understand what's happening.
 
 ## Example
 
-![Alt Text](https://github.com/Zulbukharov/filler/blob/master/img/image.png)
+![Alt Text](https://github.com/Zulbukharov/filler/blob/master/img/filler.gif)
 
 ## Prerequisites
 
