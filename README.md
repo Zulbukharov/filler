@@ -19,7 +19,7 @@ The aim of the game is to put more pieces on the map than the ennemy.
 
 On big maps it's difficult to see what is really happening.
 
-A visualizer made with the SDL2 helps us to understand what's happening. Use the left and right arrows of your keyboard to see it. 
+A visualizer made with the SDL2 helps us to understand what's happening. 
 
 ## Example
 
@@ -48,7 +48,7 @@ Visualizer mode :
 `./filler_vm -f [map] -p1 [player1] -p2 [player2] | ./visual/visual`
 
 Example from the root folder : 
-`ressources/./filler_vm -f ressources/maps/map02 -p1 ./azulbukh.filler -p2 ressources/players/superjeannot.filler | ./visual/visual`
+`resources/./filler_vm -f resources/maps/map02 -p1 ./azulbukh.filler -p2 resources/players/superjeannot.filler | ./visual/visual`
 
 ## Final Mark
 
