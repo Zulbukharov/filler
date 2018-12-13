@@ -6,13 +6,13 @@
 #    By: azulbukh <azulbukh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/09 22:04:58 by azulbukh          #+#    #+#              #
-#    Updated: 2018/12/12 00:10:43 by azulbukh         ###   ########.fr        #
+#    Updated: 2018/12/12 19:38:34 by azulbukh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = visual
 
-SRC = visual.c
+SRC = visual.c redraw.c util.c
 
 OBJECT_VISUAL = $(SRC:.c=.o)
 FLAGS = -Wall -Wextra -Werror
@@ -31,8 +31,6 @@ INCLUDES_SDL2_TTF = -I ./src/SDL/SDL2_ttf.framework/Headers
 all: $(NAME)
 
 $(NAME) : $(OBJECT_VISUAL)
-	# make -C ./src
-	# @echo "\033[0;32m[LIB COMPILED]\033[0;0m"
 	@gcc -o $(NAME) $(FLAGS) $(OBJECT_VISUAL) $(LIBFT) $(INCLUDES_SDL2) $(INCLUDES_SDL2_IMAGE) -rpath @loader_path/src/sdl $(FRAMEWORK_SDL2) $(INCLUDES_SDL2_TTF) $(INCLUDES_SDL2_MIXER)
 	@echo "\033[0;32m[VISUAL COMPILED]\033[0;0m"
 
@@ -43,12 +41,10 @@ $(NAME) : $(OBJECT_VISUAL)
 	gcc	-g $(FLAGS) -o $@ -c $< $(INCLUDES_VISUAL) $(INCLUDES_LIBFT) $(INCLUDES_SDL2) $(INCLUDES_SDL2_IMAGE) $(INCLUDES_SDL2_TTF) $(INCLUDES_SDL2_MIXER)
 
 clean:
-	# make -C ./src clean
 	/bin/rm -f $(OBJECT_VISUAL)
 	rm -f TAGS
 
 fclean: clean
-	# /bin/rm -f ./src/libftprintf.a
 	/bin/rm -f $(NAME)
 
 re: fclean all tags

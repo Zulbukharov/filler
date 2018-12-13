@@ -6,13 +6,13 @@
 #    By: azulbukh <azulbukh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/09 13:37:15 by azulbukh          #+#    #+#              #
-#    Updated: 2018/12/09 22:11:33 by azulbukh         ###   ########.fr        #
+#    Updated: 2018/12/12 20:31:38 by azulbukh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = azulbukh.filler
 
-SRC = filler.c
+SRC = filler.c algo.c parse.c
 
 OBJECT_FILLER = $(SRC:.c=.o)
 FLAGS = -Wall -Wextra -Werror

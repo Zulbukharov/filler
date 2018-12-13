@@ -6,151 +6,63 @@
 /*   By: azulbukh <azulbukh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 22:05:07 by azulbukh          #+#    #+#             */
-/*   Updated: 2018/12/12 01:30:52 by azulbukh         ###   ########.fr       */
+/*   Updated: 2018/12/12 20:19:16 by azulbukh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "visual.h"
 
-void	destroy(t_global *global)
+void	put_text(t_global *global, char *s, t_cord d, int i)
 {
-	t_cord dot;
+	SDL_Surface *text_sur;
+	SDL_Texture *text;
 
-	dot = (t_cord){0, 0};
-	while (dot.x < global->x_h)
-	{
-		free(global->map[dot.x]);
-		global->map[dot.x] = NULL;
-		dot.x++;
-	}
-	dot.x = 0;
-	free(global->map);
-	global->map = NULL;
-}
-
-void	draw_elem_rect(t_global *global, int x, int y)
-{
-	if (global->map[x][y] == 'X' || global->map[x][y] == 'O' ||
-	global->map[x][y] == 'x' || global->map[x][y] == 'o')
-	{
-		SDL_Rect rect = {x * global->elem_size_x, y * global->elem_size_y, global->elem_size_x, global->elem_size_y};
-		if (global->map[x][y] == 'x' || global->map[x][y] == 'X')
-		{
-			global->score_p2 = global->clear ? global->score_p2 + 1 : global->score_p2;
-			SDL_RenderCopy(global->renderer, global->texture[0], NULL, &rect);
-		}
-		else
-		{
-			global->score_p1 = global->clear ? global->score_p1 + 1 : global->score_p1;
-			SDL_RenderCopy(global->renderer, global->texture[1], NULL, &rect);
-		}
-	}
-}
-
-void	redraw(t_global *global)
-{
-	t_util u;
-
-	u = (t_util){0, 0, 0};
-	global->line = NULL;
-	while (1)
-	{
-		if (ft_get_next_line(0, &global->line) <= 0)
-		{
-			global->clear = 0;
-			return ;
-		}
-		if (ft_strncmp("Plateau", global->line, 7) == 0)
-		{
-			break ;
-		}
-		free(global->line);
-	}
-	while(ft_isnum(global->line[u.i]) == 0)
-		u.i++;
-	if (!global->iter)
-	{
-		global->x_h = ft_atoi(&global->line[u.i]);
-		global->y_w = ft_atoi(&global->line[u.i + ft_get_int_len(global->x_h)]);
-		global->elem_size_x = WIN_X / global->x_h;
-		global->elem_size_y = (WIN_Y - FRAME_SIZE) / global->y_w;
-		global->map = (char**)malloc(sizeof(char*) * global->x_h);
-		u.x = 0;
-		while (u.x < global->x_h)
-		{
-			global->map[u.x] = (char*)malloc(sizeof(char) * global->y_w);
-			u.x++;
-		}
-		global->iter = 1;
-	}
-	free(global->line);
-	global->line = NULL;
-	u.x = 0;
-	ft_get_next_line(0, &global->line);
-	free(global->line);
-	global->line = NULL;
-	while (u.x < global->x_h)
-	{
-		u.i = 0;
-		ft_get_next_line(0, &global->line);
-		u.old = global->line;
-		while (ft_isnum(*global->line) == 1 || *global->line == ' ')
-			global->line++;
-		while (u.i < global->y_w)
-		{
-			global->map[u.x][u.i] = global->line[u.i];
-			u.i++;
-		}
-		u.x++;
-		free(u.old);
-		global->line = NULL;
-		u.old = NULL;
-	}
-}
-
-void			event(t_global *global)
-{
-	if (global->event.type == SDL_QUIT)
-		global->done = SDL_TRUE;
-	if (global->event.key.keysym.sym == SDLK_ESCAPE)
-		global->done = SDL_TRUE;
-}
-
-void			put_text(t_global *global, char *s, int x, int y)
-{
-	SDL_Color textColor = { 0, 0, 0, 0 };
-	SDL_Surface* textSurface = TTF_RenderText_Solid(global->font, s, textColor);
-	SDL_Texture* text = SDL_CreateTextureFromSurface(global->renderer, textSurface);
-	int text_width = textSurface->w;
-	int text_height = textSurface->h;
-	SDL_FreeSurface(textSurface);
-	SDL_Rect renderQuad = {x, y, text_width, text_height};
-	SDL_RenderCopy(global->renderer, text, NULL, &renderQuad);
+	text_sur = TTF_RenderText_Solid(global->font, s,
+		(SDL_Color){255, 255, 255, 255});
+	text = SDL_CreateTextureFromSurface(global->renderer, text_sur);
+	SDL_FreeSurface(text_sur);
+	if (i > 0)
+		SDL_RenderCopy(global->renderer, text, NULL,
+			&(SDL_Rect){d.x - (ft_strlen(s) * 18) - 10,
+			d.y, text_sur->w, text_sur->h});
+	else
+		SDL_RenderCopy(global->renderer, text, NULL,
+		&(SDL_Rect){d.x, d.y, text_sur->w, text_sur->h});
 	SDL_DestroyTexture(text);
 	if (s)
 		free(s);
 }
 
-void			loop_for_map(t_global *global)
+void	loop_for_map(t_global *global)
 {
+	t_cord d;
+
+	d = (t_cord){0, 0};
+	SDL_RenderCopy(global->renderer, global->elf, NULL,
+		&(SDL_Rect){0, 0, WIN_X, WIN_Y});
 	global->score_p1 = global->clear ? 0 : global->score_p1;
 	global->score_p2 = global->clear ? 0 : global->score_p2;
-	for (int x = 0; x < global->x_h; x++)
-		for (int y = 0; y < global->y_w; y++)
-			draw_elem_rect(global, x, y);
-	SDL_Rect rect3 = {0, WIN_Y - FRAME_SIZE, WIN_X, FRAME_SIZE};
-	SDL_RenderCopy(global->renderer, global->frame, NULL, &rect3);
-	SDL_Rect rect = {200, WIN_Y - FRAME_SIZE + 20, 200, 200};
-	SDL_RenderCopy(global->renderer, global->texture[2], NULL, &rect);
-	SDL_Rect rect1 = {800, WIN_Y - FRAME_SIZE + 20, 200, 200};
-	SDL_RenderCopy(global->renderer, global->texture[3], NULL, &rect1);
-	put_text(global, ft_itoa_base(global->score_p1, 10), 280, WIN_Y - FRAME_SIZE + 230);
-	put_text(global, ft_itoa_base(global->score_p2, 10), 880, WIN_Y - FRAME_SIZE + 230);
+	while (d.x < global->x_h)
+	{
+		d.y = 0;
+		while (d.y < global->y_w)
+		{
+			draw_elem_rect(global, d.x, d.y);
+			d.y++;
+		}
+		d.x++;
+	}
+	put_text(global, ft_strdup("Player 2 BLUE"), (t_cord){400, 50}, 1);
+	put_text(global, ft_itoa_base(global->score_p2, 10), (t_cord){400, 100}, 1);
+	put_text(global, ft_itoa_base(global->score_p1, 10),
+		(t_cord){1510, 100}, 0);
+	put_text(global, ft_strdup("RED Player 1"), (t_cord){1510, 50}, 0);
 }
 
-void			loop(t_global global)
+void	loop(t_global global)
 {
-	clock_t			t1, t2;
+	clock_t			t1;
+	clock_t			t2;
 
 	t2 = clock() / 50000;
 	while (!global.done)
@@ -165,9 +77,9 @@ void			loop(t_global global)
 			if (global.clear)
 				redraw(&global);
 			loop_for_map(&global);
+			draw_grid(&global);
 			SDL_RenderPresent(global.renderer);
 		}
-		// if (global.clear)
 	}
 }
 
@@ -181,13 +93,9 @@ void	init_sdl(t_global *global)
 	TTF_Init();
 	if (!(global->font = TTF_OpenFont("font.ttf", 48)))
 		perror(TTF_GetError());
-	if (!(global->frame = IMG_LoadTexture(global->renderer, "art.jpg")))
-		perror("[Error]\n");
 	global->texture[0] = IMG_LoadTexture(global->renderer, "1.jpg");
 	global->texture[1] = IMG_LoadTexture(global->renderer, "2.jpg");
-	global->texture[2] = IMG_LoadTexture(global->renderer, "red.png");
-	global->texture[3] = IMG_LoadTexture(global->renderer, "blue.png");
-	global->elf = IMG_LoadTexture(global->renderer, "elf.png");
+	global->elf = IMG_LoadTexture(global->renderer, "back.png");
 	global->done = SDL_FALSE;
 }
 
@@ -195,7 +103,8 @@ int		main(void)
 {
 	t_global global;
 
-	global = (t_global){0, 0, {}, 0, 0, 0, {}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0};
+	global = (t_global){0, 0, {0, 0}, 0, 0, 0, {0},
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0};
 	if (SDL_Init(SDL_INIT_VIDEO) == 0)
 	{
 		init_sdl(&global);

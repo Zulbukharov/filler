@@ -6,7 +6,7 @@
 /*   By: azulbukh <azulbukh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 22:05:37 by azulbukh          #+#    #+#             */
-/*   Updated: 2018/12/12 01:28:34 by azulbukh         ###   ########.fr       */
+/*   Updated: 2018/12/12 20:19:29 by azulbukh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@
 # include <ft_printf.h>
 # include <time.h>
 
-# define WIN_X 1200
-# define WIN_Y 1200
-# define FRAME_SIZE 300
+# define WIN_X 1900
+# define WIN_Y 1000
+# define FRAME_SIZE 800
+# define FRAME_SIZE_Y 100
 
 typedef struct		s_cord
 {
@@ -42,7 +43,7 @@ typedef	struct		s_global
 {
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
-	SDL_Texture		*texture[4];
+	SDL_Texture		*texture[2];
 	SDL_Texture		*frame;
 	TTF_Font		*font;
 	SDL_bool		done;
@@ -64,5 +65,17 @@ typedef	struct		s_global
 	SDL_Texture		*elf;
 	int				iter;
 }					t_global;
+
+void				draw_grid(t_global *g);
+void				destroy(t_global *global);
+void				draw_elem_rect(t_global *global, int x, int y);
+void				redraw2(t_global *global, t_util *u);
+void				redraw3(t_global *global, t_util *u);
+void				redraw(t_global *global);
+void				event(t_global *global);
+void				put_text(t_global *global, char *s, t_cord d, int i);
+void				loop_for_map(t_global *global);
+void				loop(t_global global);
+void				init_sdl(t_global *global);
 
 #endif
